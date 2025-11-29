@@ -8,37 +8,40 @@
 
 ## 🚀 **БЫСТРЫЙ ЗАПУСК - В 1 КЛИК!**
 
-### **🔥 Вариант MAX ПРОСТОЙ (Windows):**
-**Просто дважды кликни на `start_spark.bat`**
+### **🔥 ЗАПУСК SPARK (Windows):**
+**ДВАЖДЫ КЛИКНИ НА: `SPARK_LAUNCHER.bat`**
 
-**Что произойдёт автоматически:**
-1. ✅ Запуск Express.js сервера
-2. ✅ Cloudflare туннель глобального доступа
-3. ✅ Production build Next.js сайта
-4. ✅ Авто-коммит и push на GitHub
-5. ✅ Netlify автодеплой
-6. ✅ **АВТО-ОТКРЫТИЕ ТРЁХ ВКЛАДОК В БРАУЗЕРЕ:**
-   - 🔗 `http://localhost:8000/health` - API health check
-   - 🔗 `http://localhost:3001` - локальная версия сайта
-   - 🔗 `https://spark-production.netlify.app` - глобальная версия сайта
+**Что запустится автоматически:**
+1. ✅ Express.js сервер с SQLite БД
+2. ✅ Cloudflare Tunnel для глобального доступа
+3. ✅ Production сборка Next.js фронтенда
+4. ✅ Авто-push на GitHub
+5. ✅ Netlify production deploy
+6. ✅ **АВТОМАТИЧЕСКОЕ ОТКРЫТИЕ БРАУЗЕРА:**
+   - `http://localhost:8000/health` - API проверка
+   - `http://localhost:3001` - локальный сайт
+   - `https://spark-production.netlify.app` - публичный сайт
 
-### **🖥️ Вариант Git Bash/WSL:**
+### **🖥️ РУЧНОЙ ЗАПУСК (Git Bash):**
 ```bash
-# Сделай исполняемым и запусти
-chmod +x start_spark_simple.sh
-./start_spark_simple.sh
+chmod +x spark_bash_launcher.sh
+./spark_bash_launcher.sh
 ```
 
-### **Вариант 2: ПОЛНЫЙ (Windows PowerShell)**
+### **🔧 АЛЬТЕРНАТИВНЫЕ ЗАПУСКИ:**
+
+#### **PowerShell скрипт (Windows):**
 ```powershell
-# Дважды кликни:
-start_spark.bat
-
-# Или вручную:
-.\start_spark_automatic.ps1 -All
+.\spark_powershell_launcher.ps1 -All
 ```
 
-### **Вариант 3: РУЧНОЙ (по шагам)**
+#### **Bash скрипт (Git Bash):**
+```bash
+chmod +x spark_bash_launcher.sh
+./spark_bash_launcher.sh
+```
+
+#### **Детальное руководство по запуску:**
 Смотри `SPARK_AI_LAUNCH_INSTRUCTIONS.md`
 
 ---
@@ -95,14 +98,17 @@ curl https://estates-victorian-remedies-reflect.trycloudflare.com/health
 
 ---
 
-## 📁 **СОЗДАННЫЕ ФАЙЛЫ:**
+## 📁 **ОСНОВНЫЕ ФАЙЛЫ:**
 
-- ✅ `start_spark.bat` - Windows launcher
-- ✅ `start_spark_automatic.ps1` - PowerShell скрипт
-- ✅ `start_spark_simple.sh` - Bash скрипт
-- ✅ `SPARK_AI_LAUNCH_INSTRUCTIONS.md` - Детальное руководство
-- ✅ `README_ONE_CLICK.md` - Краткое руководство
-- ✅ `README_FINAL.md` - Этот файл
+### **🚀 ЛАУНЧЕРЫ:**
+- **✅ `SPARK_LAUNCHER.bat`** - **ГЛАВНЫЙ ЗАПУСК** (дважды кликни!)
+- **✅ `spark_bash_launcher.sh`** - Для Git Bash
+- **✅ `spark_powershell_launcher.ps1`** - Для PowerShell
+
+### **📚 ДОКУМЕНТАЦИЯ:**
+- **✅ `README_SPARK.md`** - Этот файл (основное руководство)
+- **✅ `SPARK_AI_LAUNCH_INSTRUCTIONS.md`** - Детальное техническое руководство
+- **✅ `AI_Rules.md`** - Правила для AI агентов
 
 ---
 
