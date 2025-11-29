@@ -1,8 +1,12 @@
-# example netlify.toml
+# Spark Production Configuration
 [build]
   command = "npm run build"
   functions = "netlify/functions"
   publish = "./.next"
+
+  # Environment variables
+  [build.environment]
+    NEXT_PUBLIC_API_URL = "https://spark-api-production.netlify.app"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.

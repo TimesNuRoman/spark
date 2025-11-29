@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Layout from '@/components/Layout';
 
 type PostTab = 'compose' | 'filters' | 'edit' | 'tags';
 
@@ -247,9 +248,9 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+    <Layout>
+      {/* Header Actions */}
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <button className="text-gray-600 dark:text-gray-400">
           <span className="text-xl">✕</span>
         </button>
@@ -287,35 +288,7 @@ export default function CreatePostPage() {
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1">
-        {renderTabContent()}
-      </div>
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-around items-center py-3 max-w-md mx-auto">
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">🏠</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Главная</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">🔍</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Поиск</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">➕</span>
-            <span className="text-xs text-red-600">Создать</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">💬</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Сообщения</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">👤</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Профиль</span>
-          </div>
-        </div>
-      </div>
-    </div>
+      {renderTabContent()}
+    </Layout>
   );
 }

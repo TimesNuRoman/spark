@@ -1,67 +1,63 @@
 'use client';
 
+import Layout from '@/components/Layout';
+
 export default function ProfileDemoPage() {
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-gray-900 min-h-screen">
+    <Layout showAppBar={false}>
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 p-6">
+      <div className="bg-white dark:bg-gray-800 px-4 py-3">
         <div className="flex items-center justify-between">
-          <button className="text-gray-600 dark:text-gray-400">
-            <span className="text-xl">⬅️</span>
-          </button>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Spark</h1>
-          <button className="text-gray-600 dark:text-gray-400">
-            <span className="text-xl">⚙️</span>
-          </button>
+          <div className="text-gray-900 dark:text-white font-bold">@spark_admin</div>
+          <div className="w-8 h-8"></div> {/* Свободное пространство */}
         </div>
       </div>
 
       {/* Profile Info */}
-      <div className="px-6 pb-6">
-        <div className="flex items-center space-x-4">
-          <div className="w-20 h-20 bg-gradient-to-br from-red-400 to-blue-500 rounded-full flex items-center justify-center">
-            <span className="text-2xl">👤</span>
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">@spark_admin</h2>
-            <p className="text-gray-600 dark:text-gray-400">John Doe</p>
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-              Социальный феномен нового поколения. Мы превзошли все существующие сети.
-            </p>
+      <div className="px-6 py-8">
+        {/* Big Avatar Center */}
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <div className="w-32 h-32 bg-gradient-to-br from-red-400 to-blue-500 rounded-3xl flex items-center justify-center shadow-lg">
+              <div className="w-28 h-28 bg-white dark:bg-gray-800 rounded-3xl flex items-center justify-center">
+                <span className="text-4xl">👤</span>
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Name and Bio */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            🔥 spark_admin 🔥
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">John Doe</p>
+          <p className="text-sm text-gray-500 dark:text-gray-500 mb-6 max-w-xs mx-auto">
+            Расскажите о себе здесь
+          </p>
+        </div>
+
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-3 gap-4 mt-6 mb-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">128</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Посты</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">🔵 128</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Посты</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">🔵 1.2к</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Подписчики</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">👁️ 1к</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Подписчики</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">👁️ 2.5к</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Просмотры</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">👁️ 2.5к</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Просмотры</div>
           </div>
         </div>
 
         {/* Edit Button */}
-        <button className="w-full mt-4 bg-red-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-red-700 transition-colors">
-          Редактировать профиль
+        <button className="w-full py-4 bg-white dark:bg-gray-800 border-2 border-red-600 text-red-600 dark:text-red-400 rounded-xl font-semibold hover:bg-red-50 dark:hover:bg-red-950 transition-colors mb-4 flex items-center justify-center">
+          📝 Редактировать профиль
         </button>
 
-        {/* Analytics Score */}
-        <div className="bg-gradient-to-r from-red-500 to-blue-500 rounded-lg p-4 mt-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold">Spark Analytics Score</h3>
-              <p className="text-sm opacity-90">Лучше Meta на 0.1 пункта</p>
-            </div>
-            <div className="text-3xl font-bold">9.8</div>
-          </div>
-        </div>
       </div>
 
       {/* Tabs */}
@@ -91,9 +87,9 @@ export default function ProfileDemoPage() {
       </div>
 
       {/* Messages Placeholder */}
-      <div className="p-6 text-center bg-gray-50 dark:bg-gray-800 mt-4 mx-4 rounded-lg">
-        <span className="text-gray-500 dark:text-gray-400">Сообщения скоро будут доступны через API</span>
+      <div className="p-4 text-center w-full">
+        <span className="text-gray-500 dark:text-gray-400 text-sm">╰─ Сообщения скоро будут доступны ─╯</span>
       </div>
-    </div>
+    </Layout>
   );
 }

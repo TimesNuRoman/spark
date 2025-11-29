@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Layout from '@/components/Layout';
 
 interface Conversation {
   id: number;
@@ -82,7 +83,7 @@ export default function MessagesPage() {
   );
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-gray-900 min-h-screen">
+    <Layout>
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center">
         <button className="mr-3 text-gray-600 dark:text-gray-400">
@@ -187,31 +188,6 @@ export default function MessagesPage() {
         </div>
       )}
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-around items-center py-3 max-w-md mx-auto">
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">🏠</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Главная</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">🔍</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Поиск</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">➕</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Создать</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">💬</span>
-            <span className="text-xs text-red-600">Сообщения</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <span className="text-xl">👤</span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">Профиль</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    </Layout>
   );
 }

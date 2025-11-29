@@ -1,5 +1,5 @@
 // API client for Spark server
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE = '/api';
 
 export interface User {
   id: number;
