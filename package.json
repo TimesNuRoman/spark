@@ -1,6 +1,7 @@
 {
-  "name": "website",
-  "version": "0.1.0",
+  "name": "spark-website",
+  "version": "1.0.0",
+  "description": "Профессиональный веб-сайт платформы Spark - лучшая социальная сеть нового поколения",
   "private": true,
   "scripts": {
     "dev": "next dev",
