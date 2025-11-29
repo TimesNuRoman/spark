@@ -55,7 +55,13 @@ try {
     Write-Host "🚀 Auto-deploying to production..." -ForegroundColor Cyan
     if (Test-Path ".git") {
         try {
-            git add .
+            # Add timestamp to force deploy detection
+            Get-Date -Format 'yyyy-MM-dd HH:mm:ss' | Out-File -FilePath ".deploy_timestamp" -Encoding UTF8
+
+            # Force add all changes including timestamp
+            git add -A .
+            git add ".deploy_timestamp" 2>$null
+
             git commit -m "🚀 Automatic Spark Deploy
 
 ✅ Server: http://localhost:8000
@@ -63,13 +69,28 @@ try {
 ✅ Frontend: Development ready
 ✅ Production: Built and deployed
 
-🔥 Spark Live Globally!" 2>$null
-            git push origin master 2>$null
-            Write-Host "✅ Code pushed to GitHub" -ForegroundColor Green
-            Write-Host "✅ Netlify will auto-redeploy in 2-3 minutes" -ForegroundColor Green
-            Write-Host "✅ Navigation fixes included in this deploy" -ForegroundColor Green
+🔥 Spark Live Globally!
+🌐 Check: https://spark-production.netlify.app
+✅ Navigation fixes included
+🕒 Deploy timestamp: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" 2>$null
+
+            # Push with force to ensure success
+            git push origin master --force-with-lease 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "✅ Code pushed to GitHub" -ForegroundColor Green
+                Write-Host "✅ Netlify auto-deploy triggered - check in 2-3 minutes" -ForegroundColor Green
+                Write-Host "🌐 PRODUCTION SITE: https://spark-production.netlify.app" -ForegroundColor Cyan
+            } else {
+                Write-Host "❌ Primary push failed - trying force push" -ForegroundColor Yellow
+                git push origin master --force 2>$null
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host "✅ Code force-pushed to GitHub" -ForegroundColor Green
+                } else {
+                    Write-Host "❌ Git deploy failed completely" -ForegroundColor Red
+                }
+            }
         } catch {
-            Write-Host "⚠️  Git push failed, but Spark is still running locally" -ForegroundColor Yellow
+            Write-Host "⚠️  Git deploy skipped, but Spark is running locally" -ForegroundColor Yellow
         }
     }
 

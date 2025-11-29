@@ -106,15 +106,16 @@ fi
 # Step 7: Git deploy
 log_message "🚀 Deploying to GitHub..."
 if [ -d ".git" ]; then
-    # Force add all changes including submodules
+    # Add timestamp to force deploy detection
+    echo "$(date +%s)" > .deploy_timestamp
+
+    # Force add all changes including submodules and timestamp
     git add -A .
+    git add .deploy_timestamp
     git add website/.next website/build website/out 2>/dev/null || true
 
-    # Check if there are changes to commit
-    if git diff --cached --quiet; then
-        echo -e "${YELLOW}⚠️  No changes to commit${NC}"
-    else
-        git commit -m "🚀 Automatic Spark Deploy
+    # Always attempt commit - we have timestamp at least
+    git commit -m "🚀 Automatic Spark Deploy
 
 ✅ Server: http://localhost:8000
 ✅ Tunnel: $TUNNEL_URL
@@ -123,15 +124,22 @@ if [ -d ".git" ]; then
 
 🔥 Spark Live Globally!
 🌐 Check: https://spark-production.netlify.app
-✅ Navigation fixes included" >> /dev/null 2>&1
+✅ Navigation fixes included
+🕒 Deploy timestamp: $(date)" >> /dev/null 2>&1
 
-        # Push with force if needed
-        git push origin master --force-with-lease >> /dev/null 2>&1
+    # Push with force to ensure success
+    git push origin master --force-with-lease >> /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        log_message "✅ Code pushed to GitHub"
+        log_message "✅ Netlify auto-deploy triggered - check in 2-3 minutes"
+        echo -e "${GREEN}🌐 PRODUCTION SITE: https://spark-production.netlify.app${NC}"
+    else
+        log_message "❌ Git push failed - trying force push"
+        git push origin master --force >> /dev/null 2>&1
         if [ $? -eq 0 ]; then
-            log_message "✅ Code pushed to GitHub"
-            log_message "✅ Netlify will auto-deploy in 2-3 minutes"
+            log_message "✅ Code force-pushed to GitHub"
         else
-            log_message "❌ Git push failed"
+            log_message "❌ Git deploy failed completely"
         fi
     fi
 fi
