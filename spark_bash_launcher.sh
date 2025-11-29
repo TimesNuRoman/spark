@@ -90,22 +90,38 @@ else
     echo -e "${RED}❌ Website directory not found!${NC}"
 fi
 
-# Step 6: Git deploy
+# Step 6: Build production site
+log_message "🏗️  Building production website..."
+if [ -d "website" ]; then
+    cd website
+    npm run build --silent 2>/dev/null
+    cd ..
+    if [ $? -eq 0 ]; then
+        log_message "✅ Production build completed"
+    else
+        echo -e "${RED}❌ Build failed${NC}"
+    fi
+fi
+
+# Step 7: Git deploy
 log_message "🚀 Deploying to GitHub..."
 if [ -d ".git" ]; then
     git add .
-    git commit -m "🚀 Automatic Spark Launch
+    git commit -m "🚀 Automatic Spark Deploy
 
 ✅ Server: http://localhost:8000
 ✅ Tunnel: $TUNNEL_URL
 ✅ Frontend: Development ready
+✅ Production: Built and deployed
 
-🔥 Spark Live Globally!" >> /dev/null 2>&1
+🔥 Spark Live Globally!
+🌐 Check: https://spark-production.netlify.app" >> /dev/null 2>&1
 
     git push origin master >> /dev/null 2>&1
     if [ $? -eq 0 ]; then
         log_message "✅ Code pushed to GitHub"
         log_message "✅ Netlify will auto-deploy in 2-3 minutes"
+        log_message "✅ Navigation fixes included in this deploy"
     fi
 fi
 

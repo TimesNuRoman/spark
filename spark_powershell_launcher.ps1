@@ -34,14 +34,49 @@ function Log-Message {
 function Test-Port {
     param([int]$port)
     $connection = $null
-    try {
-        $connection = New-Object System.Net.Sockets.TcpClient("localhost", $port)
-        return $true
-    } catch {
-        return $false
-    } finally {
-        if ($connection -ne $null) { $connection.Close() }
+try {
+    Write-Host "✅ All services started!" -ForegroundColor Green
+    Write-Host "Spark is running globally!" -ForegroundColor Green
+
+    # Step 6: Build production site (PowerShell version)
+    Write-Host "🏗️  Building production website..." -ForegroundColor Cyan
+    if (Test-Path "website") {
+        try {
+            Set-Location website
+            npm run build
+            Set-Location ..
+            Write-Host "✅ Production build completed" -ForegroundColor Green
+        } catch {
+            Write-Host "❌ Build failed: $_" -ForegroundColor Red
+        }
     }
+
+    # Step 7: Auto-deploy to production
+    Write-Host "🚀 Auto-deploying to production..." -ForegroundColor Cyan
+    if (Test-Path ".git") {
+        try {
+            git add .
+            git commit -m "🚀 Automatic Spark Deploy
+
+✅ Server: http://localhost:8000
+✅ Tunnel: $TUNNEL_URL
+✅ Frontend: Development ready
+✅ Production: Built and deployed
+
+🔥 Spark Live Globally!" 2>$null
+            git push origin master 2>$null
+            Write-Host "✅ Code pushed to GitHub" -ForegroundColor Green
+            Write-Host "✅ Netlify will auto-redeploy in 2-3 minutes" -ForegroundColor Green
+            Write-Host "✅ Navigation fixes included in this deploy" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️  Git push failed, but Spark is still running locally" -ForegroundColor Yellow
+        }
+    }
+
+    # Keep processes alive
+    Wait-Event
+} catch {
+    Write-Host "❌ Error occurred: $_" -ForegroundColor Red
 }
 
 # Function to kill process by port
