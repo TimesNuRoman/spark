@@ -130,13 +130,9 @@ export default function WelcomeHome() {
         {/* Minimal header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-light text-gray-900 tracking-wide mb-3">Spark</h1>
-          <p className="text-gray-600 leading-relaxed max-w-xs mx-auto mb-1">
+          <p className="text-gray-600 leading-relaxed max-w-xs mx-auto">
             Контент, который понимает вас лучше, чем вы сами
           </p>
-          <div className="text-xs text-green-600 font-medium">🚀 Live Deploy 2025-11-29 23:03</div>
-          <div className="bg-blue-50 px-3 py-1 rounded-full text-xs text-blue-600 font-medium mt-2">
-            🏠 ГЛАВНАЯ СТРАНИЦА
-          </div>
         </div>
 
         {/* Welcome message */}
@@ -204,36 +200,6 @@ export default function WelcomeHome() {
           </button>
         </div>
 
-        {/* Features hint */}
-        <div className="text-center mt-16">
-          <div className="grid grid-cols-3 gap-4 opacity-70">
-            <div className="text-center">
-              <div className="text-2xl mb-1">🤖</div>
-              <div className="text-xs text-gray-500">AI Mind-Reading</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl mb-1">🔒</div>
-              <div className="text-xs text-gray-500">Signal Security</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl mb-1">📊</div>
-              <div className="text-xs text-gray-500">Analytics 9.8</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Floating action button - bottom right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => handleAction('/register')}
-          className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 flex items-center space-x-3"
-        >
-          <span className="text-xl">✨</span>
-          <span>Попробовать Spark</span>
-          <span className="text-lg">🚀</span>
-        </button>
       </div>
     </div>
   );

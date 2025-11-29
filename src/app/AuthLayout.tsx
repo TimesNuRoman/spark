@@ -98,39 +98,7 @@ export default function AuthLayout({
         </div>
       )}
 
-      {/* Mobile Navigation */}
-      <div className="lg:hidden">
-        <header className="bg-white dark:bg-gray-800 shadow-sm">
-          <nav className="px-4 sm:px-6">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-red-600">
-                  {isAuthenticated ? '🌍 SPARK' : 'SPARK'}
-                </h1>
-              </div>
-              <div className="flex items-center space-x-3">
-                {isAuthenticated ? (
-                  <div className="flex items-center space-x-3">
-                    <a href="/feed" className={`text-sm font-medium ${pathname === '/feed' ? 'text-red-600' : 'text-gray-600 hover:text-red-600'}`}>
-                      Фид
-                    </a>
-                    <a href="/profile" className={`text-sm font-medium ${pathname === '/profile' ? 'text-red-600' : 'text-gray-600 hover:text-red-600'}`}>
-                      Профиль
-                    </a>
-                    <button onClick={handleLogout} className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white text-sm">
-                      Выход
-                    </button>
-                  </div>
-                ) : (
-                  <a href="/login" className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
-                    Войти
-                  </a>
-                )}
-              </div>
-            </div>
-          </nav>
-        </header>
-      </div>
+
 
       <main className="min-h-screen">
         {children}
