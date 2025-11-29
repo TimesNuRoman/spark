@@ -131,13 +131,26 @@ if [ -d ".git" ]; then
     git push origin master --force-with-lease >> /dev/null 2>&1
     if [ $? -eq 0 ]; then
         log_message "✅ Code pushed to GitHub"
-        log_message "✅ Netlify auto-deploy triggered - check in 2-3 minutes"
-        echo -e "${GREEN}🌐 PRODUCTION SITE: https://spark-production.netlify.app${NC}"
+
+        # DIRECT PRODUCTION DEPLOY
+        log_message "🚀 Starting direct production deploy..."
+        cd website
+        npx netlify deploy --site cf6c50b6-7996-49c4-bdf1-31bbbac47a8a --prod --dir=out --silent 2>/dev/null
+        if [ $? -eq 0 ]; then
+            log_message "🎉 PRODUCTION DEPLOY SUCCESSFUL!"
+            echo -e "${GREEN}🌐 SITE UPDATED IMMEDIATELY: https://spark-production.netlify.app${NC}"
+        else
+            log_message "⚠️  Direct deploy failed, but GitHub auto-deploy will work"
+            echo -e "${YELLOW}🌐 Check site in 2-3 minutes: https://spark-production.netlify.app${NC}"
+        fi
+        cd ..
+
     else
         log_message "❌ Git push failed - trying force push"
         git push origin master --force >> /dev/null 2>&1
         if [ $? -eq 0 ]; then
             log_message "✅ Code force-pushed to GitHub"
+            log_message "⏳ Netlify will auto-deploy in 2-3 minutes"
         else
             log_message "❌ Git deploy failed completely"
         fi
