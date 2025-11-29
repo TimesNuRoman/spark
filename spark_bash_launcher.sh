@@ -1,4 +1,4 @@
-#!/bin/bash
+е#!/bin/bash
 
 # 🔥 SPARK SIMPLE LAUNCH SCRIPT
 # Простой автоматический запуск Spark
