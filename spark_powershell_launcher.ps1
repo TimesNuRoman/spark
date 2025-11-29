@@ -78,13 +78,41 @@ try {
             git push origin master --force-with-lease 2>$null
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "✅ Code pushed to GitHub" -ForegroundColor Green
-                Write-Host "✅ Netlify auto-deploy triggered - check in 2-3 minutes" -ForegroundColor Green
-                Write-Host "🌐 PRODUCTION SITE: https://spark-production.netlify.app" -ForegroundColor Cyan
+
+                # DIRECT PRODUCTION DEPLOY - Multiple attempts
+                Write-Host "🚀 Starting direct production deploy..." -ForegroundColor Cyan
+                Set-Location website
+
+                # Try Netlify deploy up to 3 times
+                $deployAttempts = 1
+                while ($deployAttempts -le 3) {
+                    Write-Host "  Attempt $deployAttempts/3..." -ForegroundColor Blue
+                    npx netlify deploy --site cf6c50b6-7996-49c4-bdf1-31bbbac47a8a --prod --dir=out --silent 2>$null
+                    if ($LASTEXITCODE -eq 0) {
+                        Write-Host "🎉 PRODUCTION DEPLOY SUCCESSFUL!" -ForegroundColor Green
+                        Write-Host "🌐 SITE UPDATED IMMEDIATELY: https://spark-production.netlify.app" -ForegroundColor Green
+                        break
+                    } else {
+                        if ($deployAttempts -lt 3) {
+                            Write-Host "⚠️  Attempt $deployAttempts failed, retrying..." -ForegroundColor Yellow
+                            Start-Sleep -Seconds 5
+                        } else {
+                            Write-Host "❌ All deploy attempts failed - using GitHub auto-deploy" -ForegroundColor Red
+                            Write-Host "🌐 GitHub will auto-deploy in 2-3 minutes" -ForegroundColor Yellow
+                            Write-Host "🌐 Check: https://spark-production.netlify.app" -ForegroundColor Yellow
+                        }
+                    }
+                    $deployAttempts++
+                }
+
+                Set-Location ..
+
             } else {
                 Write-Host "❌ Primary push failed - trying force push" -ForegroundColor Yellow
                 git push origin master --force 2>$null
                 if ($LASTEXITCODE -eq 0) {
                     Write-Host "✅ Code force-pushed to GitHub" -ForegroundColor Green
+                    Write-Host "⏳ Netlify will auto-deploy in 2-3 minutes" -ForegroundColor Yellow
                 } else {
                     Write-Host "❌ Git deploy failed completely" -ForegroundColor Red
                 }

@@ -132,17 +132,32 @@ if [ -d ".git" ]; then
     if [ $? -eq 0 ]; then
         log_message "✅ Code pushed to GitHub"
 
-        # DIRECT PRODUCTION DEPLOY
+        # DIRECT PRODUCTION DEPLOY - Multiple attempts
         log_message "🚀 Starting direct production deploy..."
         cd website
-        npx netlify deploy --site cf6c50b6-7996-49c4-bdf1-31bbbac47a8a --prod --dir=out --silent 2>/dev/null
-        if [ $? -eq 0 ]; then
-            log_message "🎉 PRODUCTION DEPLOY SUCCESSFUL!"
-            echo -e "${GREEN}🌐 SITE UPDATED IMMEDIATELY: https://spark-production.netlify.app${NC}"
-        else
-            log_message "⚠️  Direct deploy failed, but GitHub auto-deploy will work"
-            echo -e "${YELLOW}🌐 Check site in 2-3 minutes: https://spark-production.netlify.app${NC}"
-        fi
+
+        # Try Netlify deploy up to 3 times
+        deploy_attempts=1
+        while [ $deploy_attempts -le 3 ]; do
+            echo -e "${BLUE}Attempt $deploy_attempts/3...${NC}"
+            npx netlify deploy --site cf6c50b6-7996-49c4-bdf1-31bbbac47a8a --prod --dir=out --silent 2>/dev/null
+            if [ $? -eq 0 ]; then
+                log_message "🎉 PRODUCTION DEPLOY SUCCESSFUL!"
+                echo -e "${GREEN}🌐 SITE UPDATED IMMEDIATELY: https://spark-production.netlify.app${NC}"
+                break
+            else
+                if [ $deploy_attempts -lt 3 ]; then
+                    log_message "⚠️  Attempt $deploy_attempts failed, retrying..."
+                    sleep 5
+                else
+                    log_message "❌ All deploy attempts failed - using GitHub auto-deploy"
+                    echo -e "${YELLOW}🌐 GitHub will auto-deploy in 2-3 minutes${NC}"
+                    echo -e "${YELLOW}🌐 Check: https://spark-production.netlify.app${NC}"
+                fi
+            fi
+            ((deploy_attempts++))
+        done
+
         cd ..
 
     else
