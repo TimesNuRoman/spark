@@ -249,15 +249,15 @@ export default function CreatePostPage() {
 
   return (
     <Layout>
-      {/* Header Actions */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <button className="text-gray-600 dark:text-gray-400">
-          <span className="text-xl">✕</span>
+      {/* Header Actions - Mobile optimized */}
+      <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <button className="text-gray-600 dark:text-gray-400 p-1">
+          <span className="text-lg">✕</span>
         </button>
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Create Post</h1>
-        <button className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+        <h1 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate px-2">Create Post</h1>
+        <button className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
           text.trim() || selectedImage
-            ? 'bg-red-600 text-white hover:bg-red-700'
+            ? 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800'
             : 'bg-gray-300 dark:bg-gray-600 text-gray-500 cursor-not-allowed'
         }`}>
           Post

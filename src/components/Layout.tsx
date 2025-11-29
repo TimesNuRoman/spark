@@ -46,6 +46,8 @@ export default function Layout({ children, showAppBar = true }: LayoutProps) {
   ];
 
   const handleNavigation = (path: string) => {
+    // Prevent navigating to same page
+    if (pathname === path) return;
     router.push(path);
   };
 
