@@ -7,6 +7,10 @@ param(
     [switch]$All
 )
 
+if (-not $Development -and -not $Production -and -not $All) {
+    $All = $true
+}
+
 Write-Host "🚀 SPARK AUTOMATIC LAUNCH - STARTING..." -ForegroundColor Cyan
 Write-Host "=====================================" -ForegroundColor Cyan
 
@@ -33,111 +37,38 @@ function Log-Message {
 # Function to check if port is in use
 function Test-Port {
     param([int]$port)
-    $connection = $null
-try {
-    Write-Host "✅ All services started!" -ForegroundColor Green
-    Write-Host "Spark is running globally!" -ForegroundColor Green
-
-    # Step 6: Build production site (PowerShell version)
-    Write-Host "🏗️  Building production website..." -ForegroundColor Cyan
-    if (Test-Path "website") {
-        try {
-            Set-Location website
-            npm run build
-            Set-Location ..
-            Write-Host "✅ Production build completed" -ForegroundColor Green
-        } catch {
-            Write-Host "❌ Build failed: $_" -ForegroundColor Red
-        }
+    try {
+        $connection = New-Object System.Net.Sockets.TcpClient("localhost", $port)
+        $connection.Close()
+        return $true
+    } catch {
+        return $false
     }
-
-    # Step 7: Auto-deploy to production
-    Write-Host "🚀 Auto-deploying to production..." -ForegroundColor Cyan
-    if (Test-Path ".git") {
-        try {
-            # Add timestamp to force deploy detection
-            Get-Date -Format 'yyyy-MM-dd HH:mm:ss' | Out-File -FilePath ".deploy_timestamp" -Encoding UTF8
-
-            # Force add all changes including timestamp
-            git add -A .
-            git add ".deploy_timestamp" 2>$null
-
-            git commit -m "🚀 Automatic Spark Deploy
-
-✅ Server: http://localhost:8000
-✅ Tunnel: $TUNNEL_URL
-✅ Frontend: Development ready
-✅ Production: Built and deployed
-
-🔥 Spark Live Globally!
-🌐 Check: https://spark-production.netlify.app
-✅ Navigation fixes included
-🕒 Deploy timestamp: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" 2>$null
-
-            # Push with force to ensure success
-            git push origin master --force-with-lease 2>$null
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "✅ Code pushed to GitHub" -ForegroundColor Green
-
-                # DIRECT PRODUCTION DEPLOY - Multiple attempts
-                Write-Host "🚀 Starting direct production deploy..." -ForegroundColor Cyan
-                Set-Location website
-
-                # Try Netlify deploy up to 3 times
-                $deployAttempts = 1
-                while ($deployAttempts -le 3) {
-                    Write-Host "  Attempt $deployAttempts/3..." -ForegroundColor Blue
-                    npx netlify deploy --site cf6c50b6-7996-49c4-bdf1-31bbbac47a8a --prod --dir=out --silent 2>$null
-                    if ($LASTEXITCODE -eq 0) {
-                        Write-Host "🎉 PRODUCTION DEPLOY SUCCESSFUL!" -ForegroundColor Green
-                        Write-Host "🌐 SITE UPDATED IMMEDIATELY: https://spark-production.netlify.app" -ForegroundColor Green
-                        break
-                    } else {
-                        if ($deployAttempts -lt 3) {
-                            Write-Host "⚠️  Attempt $deployAttempts failed, retrying..." -ForegroundColor Yellow
-                            Start-Sleep -Seconds 5
-                        } else {
-                            Write-Host "❌ All deploy attempts failed - using GitHub auto-deploy" -ForegroundColor Red
-                            Write-Host "🌐 GitHub will auto-deploy in 2-3 minutes" -ForegroundColor Yellow
-                            Write-Host "🌐 Check: https://spark-production.netlify.app" -ForegroundColor Yellow
-                        }
-                    }
-                    $deployAttempts++
-                }
-
-                Set-Location ..
-
-            } else {
-                Write-Host "❌ Primary push failed - trying force push" -ForegroundColor Yellow
-                git push origin master --force 2>$null
-                if ($LASTEXITCODE -eq 0) {
-                    Write-Host "✅ Code force-pushed to GitHub" -ForegroundColor Green
-                    Write-Host "⏳ Netlify will auto-deploy in 2-3 minutes" -ForegroundColor Yellow
-                } else {
-                    Write-Host "❌ Git deploy failed completely" -ForegroundColor Red
-                }
-            }
-        } catch {
-            Write-Host "⚠️  Git deploy skipped, but Spark is running locally" -ForegroundColor Yellow
-        }
-    }
-
-    # Keep processes alive
-    Wait-Event
-} catch {
-    Write-Host "❌ Error occurred: $_" -ForegroundColor Red
 }
 
 # Function to kill process by port
-function kill-port {
+function Kill-Port {
     param([int]$port)
-    Log-Message "Checking port $port..." "Yellow"
-    $process = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($process) {
-        Log-Message "Killing process on port $port" "Yellow"
-        Stop-Process -Id $process.OwningProcess -Force -ErrorAction SilentlyContinue
+    try {
+        $connections = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+        foreach ($conn in $connections) {
+            Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
+        }
         Start-Sleep -Seconds 2
+    } catch {
+        # Ignore errors
     }
+}
+
+# Function to wait for port to become available
+function Wait-For-Port {
+    param([int]$port, [int]$timeout = 30)
+    $elapsed = 0
+    while (-not (Test-Port $port) -and $elapsed -lt $timeout) {
+        Start-Sleep -Seconds 1
+        $elapsed++
+    }
+    return $elapsed -lt $timeout
 }
 
 # Cleanup previous processes
@@ -206,7 +137,7 @@ if (Test-Path "cloudflared.exe") {
         # Look for tunnel URL pattern
         $urlMatch = $jobOutput | Select-String -Pattern "https://[^\s]+\.trycloudflare\.com"
         if ($urlMatch) {
-            $tunnelUrl = $urlMatch[line].Trim()
+            $tunnelUrl = $urlMatch.Line.Trim()
             Log-Message "✅ Tunnel URL: $tunnelUrl" "Green"
         }
     } catch {
@@ -240,55 +171,55 @@ if ($tunnelUrl) {
 }
 
 # Step 4: Start Frontend based on mode
-if ($All -or $Development -or $Production) {
-    if ($Development -or $All) {
-        Log-Message "💻 Starting Development Frontend..." "Blue"
-        Set-Location $websiteDir
-        npm install --silent
+if ($Development -or $All) {
+    Log-Message "💻 Starting Development Frontend..." "Blue"
+    Set-Location $websiteDir
+    npm install --silent
 
-        $frontendJob = Start-Job -ScriptBlock {
+    $frontendJob = Start-Job -ScriptBlock {
+        param($websiteDir)
+        Set-Location $websiteDir
+        npm run dev
+    } -ArgumentList (Join-Path $PSScriptRoot $websiteDir)
+
+    Log-Message "✅ Development server starting at http://localhost:3001" "Green"
+    Set-Location $PSScriptRoot
+
+    # Wait for dev server
+    Start-Sleep -Seconds 5
+    if (Wait-For-Port 3001 15) {
+        Log-Message "✅ Development frontend live: http://localhost:3001" "Green"
+    } else {
+        Log-Message "❌ Development frontend failed to start" "Red"
+    }
+}
+
+if ($Production) {
+    Log-Message "🏗️  Building Production Frontend..." "Blue"
+    Set-Location $websiteDir
+    npm install --silent
+    npm run build
+
+    if ($LASTEXITCODE -eq 0) {
+        Log-Message "✅ Production build completed" "Green"
+
+        $prodJob = Start-Job -ScriptBlock {
             param($websiteDir)
             Set-Location $websiteDir
-            npm run dev
+            npm run start
         } -ArgumentList (Join-Path $PSScriptRoot $websiteDir)
 
-        Log-Message "✅ Development server starting at http://localhost:3001" "Green"
-        Set-Location $PSScriptRoot
-
-        # Wait for dev server
-        Start-Sleep -Seconds 5
-        while (-not (Test-Port 3001)) {
-            Start-Sleep -Seconds 1
-        }
-        Log-Message "✅ Development frontend live: http://localhost:3001" "Green"
-    }
-
-    if ($Production -or $All) {
-        Log-Message "🏗️  Building Production Frontend..." "Blue"
-        Set-Location $websiteDir
-        npm install --silent
-        npm run build
-
-        if ($LASTEXITCODE -eq 0) {
-            Log-Message "✅ Production build completed" "Green"
-
-            $prodJob = Start-Job -ScriptBlock {
-                param($websiteDir)
-                Set-Location $websiteDir
-                npm run start
-            } -ArgumentList (Join-Path $PSScriptRoot $websiteDir)
-
-            # Wait for prod server
-            Start-Sleep -Seconds 3
-            while (-not (Test-Port 3000)) {
-                Start-Sleep -Seconds 1
-            }
+        # Wait for prod server
+        Start-Sleep -Seconds 3
+        if (Wait-For-Port 3000 15) {
             Log-Message "✅ Production frontend live: http://localhost:3000" "Green"
         } else {
-            Log-Message "❌ Production build failed" "Red"
+            Log-Message "❌ Production frontend failed to start" "Red"
         }
-        Set-Location $PSScriptRoot
+    } else {
+        Log-Message "❌ Production build failed" "Red"
     }
+    Set-Location $PSScriptRoot
 }
 
 # Step 5: Git Deploy to Production
